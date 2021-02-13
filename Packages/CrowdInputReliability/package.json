@@ -1,0 +1,18 @@
+{
+  "name": "com.kenjik.crowd-input-reliability",
+  "version": "0.1.1",
+  "displayName": "Crowd Input Reliability",
+  "description": "A package for real-time crowd input processing.",
+  "unity": "2019.1",
+  "unityRelease": "0b5",
+  "keywords": [
+    "keyword1",
+    "keyword2",
+    "keyword3"
+  ],
+  "author": {
+    "name": "Kacper Kenji Lesniak",
+    "email": "kenjikacper@gmail.com"
+  },
+  "type": "library"
+}
