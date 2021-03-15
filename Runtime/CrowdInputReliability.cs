@@ -90,7 +90,13 @@ public class CrowdInputReliability
         {
             playerReliabilities[i] += reliabilityUpdates[i];
         }
-
-        return commandFrequencies.Select((n, i) => (Number: n, Index: i)).Max().Index;
+        
+        var weightedCommandFrequencies = new List<float>(Enumerable.Repeat(0f, numberOfCommands));
+        for (var i = 0; i < numberOfPlayers; i++)
+        {
+            weightedCommandFrequencies[commands[i]] += playerReliabilities[i];
+        }
+        
+        return weightedCommandFrequencies.Select((n, i) => (Number: n, Index: i)).Max().Index;
     }
 }
