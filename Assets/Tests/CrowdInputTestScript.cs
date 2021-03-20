@@ -1,6 +1,6 @@
-using System.Collections;
+using System.Linq;
 using NUnit.Framework;
-using UnityEngine.TestTools;
+using UnityEngine;
 
 public class CrowdInputTestScript
 {
@@ -17,9 +17,6 @@ public class CrowdInputTestScript
         Assert.AreEqual(crowdInputReliability.playerReliabilities[1], 1);
         Assert.AreEqual(crowdInputReliability.playerReliabilities[2], 1);
 
-        var reliabilities = crowdInputReliability.playerReliabilities;
-        Assert.AreEqual(reliabilities[0], 1);
-
         Assert.AreEqual(crowdInputReliability.IssueCommands(commands), 0);
         Assert.AreEqual(crowdInputReliability.IssueCommands(commands2), 1);
     }
@@ -32,12 +29,11 @@ public class CrowdInputTestScript
         int[] commands = { 0, 0, 0, 0, 0, 1, 1, 1, 2, 2 };
 
         Assert.AreEqual(crowdInputReliability.IssueCommands(commands), 0);
-        Assert.AreEqual(crowdInputReliability.playerReliabilities[0], 1.05f);
-        Assert.AreEqual(crowdInputReliability.playerReliabilities[5], 1.03f);
-        Assert.AreEqual(crowdInputReliability.playerReliabilities[8], 0.83f);
+        Assert.AreEqual(crowdInputReliability.playerReliabilities[0], 1.073f, 0.001f);
+        Assert.AreEqual(crowdInputReliability.playerReliabilities[5], 1.044f, 0.001f);
+        Assert.AreEqual(crowdInputReliability.playerReliabilities[8], 0.75f, 0.001f);
 
-        var reliabilities = crowdInputReliability.playerReliabilities;
-        Assert.AreEqual(reliabilities[0], 1.05f);
+        Assert.AreEqual(crowdInputReliability.playerReliabilities.Sum(), crowdInputReliability.numberOfPlayers, 0.001f);
     }
 
     [Test]
@@ -50,8 +46,24 @@ public class CrowdInputTestScript
         Assert.AreEqual(crowdInputReliability.IssueCommands(commands), 0);
         Assert.AreEqual(crowdInputReliability.playerReliabilities[0], 1.0f);
         Assert.AreEqual(crowdInputReliability.playerReliabilities[6], 1.0f);
-
-        var reliabilities = crowdInputReliability.playerReliabilities;
-        Assert.AreEqual(reliabilities[0], 1.0f);
     } 
+    
+    
+    [Test]
+    public void ReliabilitiesShouldBeLowerBounded()
+    {
+        var crowdInputReliability = new CrowdInputReliability(10, 3, 0.05f, 0.5f);
+
+        int[] commands = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 };
+
+        for (var i = 0; i < 100; i++)
+        {
+            crowdInputReliability.IssueCommands(commands);
+            Debug.Log(crowdInputReliability.playerReliabilities[9]);
+        }
+        
+        Assert.AreEqual(crowdInputReliability.playerReliabilities[9], -1f, 0.001f);
+
+        Assert.AreEqual(crowdInputReliability.playerReliabilities.Sum(), crowdInputReliability.numberOfPlayers, 0.001f);
+    }
 }

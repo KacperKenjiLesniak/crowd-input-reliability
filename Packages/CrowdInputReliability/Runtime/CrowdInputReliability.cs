@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class CrowdInputReliability
 {
+    private const float RELIABILITY_LOWER_BOUND = -1f;
+    
     public List<float> playerReliabilities = new List<float>();
     public int numberOfPlayers { get; }
     
@@ -31,7 +33,7 @@ public class CrowdInputReliability
 
         var reliabilityChanges = new List<float>(Enumerable.Repeat(0f, numberOfPlayers));
 
-        var maxNumberOfCommands = commandFrequencies.Max();
+        int maxNumberOfCommands = commandFrequencies.Max();
 
         for (var i = 0; i < numberOfPlayers; i++)
         {
@@ -44,31 +46,35 @@ public class CrowdInputReliability
             return reliabilityChanges;
         }
 
-        var nonViableCommandsNormalization = 0.0f;
-
-        for (var i = 0; i < numberOfPlayers; i++)
-        {
-            if (playerCommandViabilities[i])
-            {
-                reliabilityChanges[i] = (float) commandFrequencies[commands[i]] / numberOfPlayers *
-                                        reliabilityCoefficient;
-            }
-            else
-            {
-                nonViableCommandsNormalization += (float) maxNumberOfCommands / commandFrequencies[commands[i]];
-            }
-        }
-
-        var sumOfViableReliabilityChanges = reliabilityChanges.Sum();
-
-        var nonViableReliabilityChangeCoefficient =
-            -maxNumberOfCommands / nonViableCommandsNormalization * sumOfViableReliabilityChanges;
+        var viableCommandsNormalization = 0.0f;
 
         for (var i = 0; i < numberOfPlayers; i++)
         {
             if (!playerCommandViabilities[i])
             {
-                reliabilityChanges[i] = nonViableReliabilityChangeCoefficient / commandFrequencies[commands[i]];
+                reliabilityChanges[i] = - (float)maxNumberOfCommands / commandFrequencies[commands[i]] *
+                                        reliabilityCoefficient;
+                
+                if (playerReliabilities[i] + reliabilityChanges[i] <= RELIABILITY_LOWER_BOUND)
+                {
+                    reliabilityChanges[i] = -playerReliabilities[i] + RELIABILITY_LOWER_BOUND;
+                }
+            }
+            else
+            {
+                viableCommandsNormalization += (float) commandFrequencies[commands[i]] / numberOfPlayers;
+            }
+        }
+
+        float sumOfNonViableReliabilityChanges = reliabilityChanges.Sum();
+
+        float viableReliabilityChangeCoefficient = - 1 / viableCommandsNormalization / numberOfPlayers * sumOfNonViableReliabilityChanges;
+
+        for (var i = 0; i < numberOfPlayers; i++)
+        {
+            if (playerCommandViabilities[i])
+            {
+                reliabilityChanges[i] = viableReliabilityChangeCoefficient * commandFrequencies[commands[i]];
             }
         }
 
