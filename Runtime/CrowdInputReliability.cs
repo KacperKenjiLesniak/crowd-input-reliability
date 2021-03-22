@@ -1,14 +1,13 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using DefaultNamespace;
 
-public class CrowdInputReliability
+public class CrowdInputReliability : ICrowdInputReliability
 {
     private const float RELIABILITY_LOWER_BOUND = -1f;
     
-    public List<float> playerReliabilities = new List<float>();
-    public int numberOfPlayers { get; }
+    private List<float> playerReliabilities = new List<float>();
+    private int numberOfPlayers { get; }
     
     private int numberOfCommands;
     private float reliabilityCoefficient;
@@ -104,5 +103,10 @@ public class CrowdInputReliability
         }
         
         return weightedCommandFrequencies.Select((n, i) => (Number: n, Index: i)).Max().Index;
+    }
+
+    public List<float> GetPlayerReliabilities()
+    {
+        return playerReliabilities;
     }
 }
