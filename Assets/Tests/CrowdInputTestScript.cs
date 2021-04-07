@@ -23,6 +23,31 @@ public class CrowdInputTestScript
     }
 
     [Test]
+    public void CrowdInputReliabilitySimplePassesSameNumber()
+    {
+        ICrowdInputReliability crowdInputReliability = new CrowdInputReliability(4, 3, 0.1f, 0.5f);
+
+        int[] commands = {1, 0, 0, 1};
+
+        Assert.AreEqual(crowdInputReliability.GetPlayerReliabilities()[0], 1);
+        Assert.AreEqual(crowdInputReliability.GetPlayerReliabilities()[1], 1);
+        Assert.AreEqual(crowdInputReliability.GetPlayerReliabilities()[2], 1);
+
+        Assert.AreEqual(crowdInputReliability.IssueCommands(commands), 1);
+    }
+    
+    
+    [Test]
+    public void CrowdInputReliabilityTwo()
+    {
+        ICrowdInputReliability crowdInputReliability = new CrowdInputReliability(2, 3, 0.1f, 0.5f);
+
+        int[] commands = {0, 1};
+        
+        Assert.AreEqual(crowdInputReliability.IssueCommands(commands), 1);
+    }
+    
+    [Test]
     public void ShouldUpdateReliabilities()
     {
         ICrowdInputReliability crowdInputReliability = new CrowdInputReliability(10, 3, 0.1f, 0.5f);
