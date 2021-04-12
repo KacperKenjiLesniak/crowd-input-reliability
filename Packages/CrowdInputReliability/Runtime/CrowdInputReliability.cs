@@ -5,7 +5,7 @@ namespace Reliability
 {
     public class CrowdInputReliability : ICrowdInputReliability
     {
-        private const float RELIABILITY_LOWER_BOUND = -1f;
+        private const float RELIABILITY_LOWER_BOUND = -0.5f;
 
         private List<float> playerReliabilities = new List<float>();
         private int numberOfPlayers { get; }

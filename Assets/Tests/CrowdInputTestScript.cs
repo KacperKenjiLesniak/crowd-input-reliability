@@ -88,7 +88,7 @@ public class CrowdInputTestScript
             Debug.Log(crowdInputReliability.GetPlayerReliabilities()[9]);
         }
         
-        Assert.AreEqual(crowdInputReliability.GetPlayerReliabilities()[9], -1f, 0.001f);
+        Assert.AreEqual(crowdInputReliability.GetPlayerReliabilities()[9], -0.5f, 0.001f);
 
         Assert.AreEqual(crowdInputReliability.GetPlayerReliabilities().Sum(), 10, 0.001f);
     }
